@@ -1,0 +1,59 @@
+name: Sync and Release (Main Only)
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+permissions:
+  contents: write # Required to push commits and create releases
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Fetch and Update Chart Source
+        run: |
+          # Clone upstream to temp dir
+          git clone https://github.com/exoscale/cert-manager-webhook-exoscale.git /tmp/source
+          
+          # Ensure charts dir exists and copy files
+          mkdir -p charts/exoscale-webhook
+          cp -r /tmp/source/deploy/exoscale-webhook/* charts/exoscale-webhook/
+          
+          # Configure git for the bot
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          
+          # Check for changes, commit and push if found
+          if [[ -n $(git status -s) ]]; then
+            git add charts/
+            # [skip ci] is CRITICAL: prevents infinite loop since we push to main
+            git commit -m "Sync chart source from upstream [skip ci]"
+            git push origin main
+          else
+            echo "No changes detected"
+          fi
+
+  release:
+    needs: sync
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: main # Explicitly checkout main to get the commit from 'sync' job
+
+      - name: Configure Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Run Chart Releaser
+        uses: helm/chart-releaser-action@v1.6.0
+        with:
+          # This configures the action to keep index.yaml on main
+          pages_branch: main 
+        env:
+          CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
