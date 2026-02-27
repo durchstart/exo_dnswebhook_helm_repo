@@ -2,6 +2,15 @@ apiVersion: v1
 entries:
   cert-manager-webhook-exoscale-chart:
   - apiVersion: v1
+    appVersion: v0.3.4
+    created: "2026-02-27T12:16:14.685086941Z"
+    description: Cert manager webhook for Exoscale
+    digest: 34eb33914a44681ee0f5b59a3ba421718cb2ab545e3e80b763c7f287eeb08aa8
+    name: cert-manager-webhook-exoscale-chart
+    urls:
+    - https://github.com/durchstart/exo_dnswebhook_helm_repo/releases/download/cert-manager-webhook-exoscale-chart-0.3.4/cert-manager-webhook-exoscale-chart-0.3.4.tgz
+    version: 0.3.4
+  - apiVersion: v1
     appVersion: v0.3.3
     created: "2026-02-26T12:59:54.521700707Z"
     description: Cert manager webhook for Exoscale
@@ -19,4 +28,4 @@ entries:
     urls:
     - https://github.com/durchstart/exo_dnswebhook_helm_repo/releases/download/cert-manager-webhook-exoscale-chart-0.3.2/cert-manager-webhook-exoscale-chart-0.3.2.tgz
     version: 0.3.2
-generated: "2026-02-26T12:59:54.521709183Z"
+generated: "2026-02-27T12:16:14.685103983Z"
